@@ -5,7 +5,7 @@
 ## 方法1. 全自动一键安装（随机密码 自动临时域名 随机伪装站点）
 
 ```
-bash <(curl -L -s git.io/a.sh)
+wget -N "https://raw.githubusercontent.com/john8911/onekey_caddy_proxy/master/caddy.sh" && chmod +x caddy.sh && ./caddy.sh
 ```
 
 ## 方法2. 自定义一键安装（自定义账号密码 自定义域名 自定义伪装站点）
@@ -41,7 +41,7 @@ bash <(curl -L -s git.io/a.sh) pro
 ## 一键卸载
 
 ```
-bash <(curl -L -s git.io/a.sh) uninstall
+wget -N "https://raw.githubusercontent.com/john8911/onekey_caddy_proxy/master/caddy.sh" && chmod +x caddy.sh && ./caddy.sh uninstall
 ```
 
 ## 查看当前代理账号信息
@@ -66,7 +66,7 @@ bash <(curl -L -s git.io/a.sh) egg
 需要使用到 DNS API（支持 CloudFlare 腾讯DNSPod 阿里云解析）
 解析你的域名A记录到服务器IP 执行以下安装命令依照提示操作
 
-bash <(curl -L -s git.io/a.sh) natvps
+wget -N "https://raw.githubusercontent.com/john8911/onekey_caddy_proxy/master/caddy.sh" && chmod +x caddy.sh && ./caddy.sh natvps
 ```
 
 ## ▚ 客户端配置
