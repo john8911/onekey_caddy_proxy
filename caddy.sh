@@ -215,7 +215,7 @@ rm -rf README.txt
 rm -rf CHANGES.txt
 rm -rf "init/"
 chmod +x caddy
-cp -p /root/caddy_linux/caddy /usr/local/bin/caddy
+cp -p /root/caddy /usr/local/bin/caddy
 caddy_tips="安装已完成，基于 caddy 的 https(h2) 代理（自带website伪装网站）"
 
 fi
