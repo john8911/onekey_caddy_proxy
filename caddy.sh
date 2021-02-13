@@ -207,8 +207,15 @@ echo "----------------------------------------------------------"
 echo "正在安装caddy主程序和代理相关插件（约1分钟）"
 echo "----------------------------------------------------------"
 
-curl https://getcaddy.com | bash -s personal http.forwardproxy,http.proxyprotocol
-
+wget --no-check-certificate -O "caddy_linux.tar.gz" "https://github.com/caddyserver/caddy/releases/download/v1.0.4/caddy_v1.0.4_linux_amd64.tar.gz"
+tar zxf "caddy_linux.tar.gz"
+rm -rf "caddy_linux.tar.gz"
+rm -rf LICENSES.txt
+rm -rf README.txt 
+rm -rf CHANGES.txt
+rm -rf "init/"
+chmod +x caddy
+cp -p /root/caddy_linux/caddy /usr/local/bin/caddy
 caddy_tips="安装已完成，基于 caddy 的 https(h2) 代理（自带website伪装网站）"
 
 fi
@@ -228,12 +235,16 @@ touch /usr/local/bin/Caddyfile
 
 cat <<EOF > /usr/local/bin/Caddyfile
 ${domain}:${port} {
-tls admin@${domain}
 root /www
+log /www/caddy.log
+proxy /downloads 127.0.0.1:10550 {
+    websocket
+    header_upstream -Origin
+}
 gzip
 index index.html
-forwardproxy {
-    basicauth ${user} ${pass}
+tls admin@${domain} {
+protocols tls1.2 tls1.3
 }
 }
 EOF
