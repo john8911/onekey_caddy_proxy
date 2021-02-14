@@ -24,155 +24,6 @@ domain_root="ip.c2ray.ml"
 #:::::::::::::::::::::::::::::::::::::
 
 
-
-#设置代理信息
-set_proxy_info(){
-
-echo "----------------------------------------------------------"
-echo "正在生成代理信息"
-echo "----------------------------------------------------------"
-
-#设置默认用户名
-if [ ! ${user} ]; then
-user="admin"
-fi
-
-#设置默认随机密码
-if [ ! ${pass} ]; then
-pass=`cat /dev/urandom | head -n 10 | md5sum | head -c 8`
-fi
-
-#生成默认域名
-if [ ! ${domain} ]; then
-rm -rf local_ip.txt && touch local_ip.txt
-echo `curl -4 ip.sb` >> local_ip.txt && sed -i "s/\./\-/g" "local_ip.txt"
-domain="$(cat local_ip.txt).${domain_root}" && rm -rf local_ip.txt
-fi
-
-#设置默认随机伪装网站
-set_website_num
-
-#清除可能残余的caddy
-clean_caddy
-
-#检测端口
-check_port
-
-}
-set_website_num(){
-
-sitenum=`shuf -n 1 -e 1 2 3 4 5 6 7 8`
-if [[ ! ${website} ]] && [[ ${sitenum} -eq 1 ]]; then
-website="www.ibm.com"
-elif [[ ! ${website} ]] && [[ ${sitenum} -eq 2 ]]; then
-website="www.stenabulk.com"
-elif [[ ! ${website} ]] && [[ ${sitenum} -eq 3 ]]; then
-website="www.qualcomm.com"
-elif [[ ! ${website} ]] && [[ ${sitenum} -eq 4 ]]; then
-website="tw.longchamp.com"
-elif [[ ! ${website} ]] && [[ ${sitenum} -eq 5 ]]; then
-website="www.apple.com"
-elif [[ ! ${website} ]] && [[ ${sitenum} -eq 6 ]]; then
-website="www.rodesk.com"
-elif [[ ! ${website} ]] && [[ ${sitenum} -eq 7 ]]; then
-website="www.adidas.com.cn"
-elif [[ ! ${website} ]] && [[ ${sitenum} -eq 8 ]]; then
-website="www.frontlynk.com"
-fi
-
-}
-
-
-
-#在menu下设置代理信息
-menu_proxy_info(){
-
-echo "按照提示依次设置代理的自定义用户名密码 自定义域名 自定义伪装站点"
-echo "如使用默认值（或随机值） 请留空 直接按回车"
-echo ""
-
-stty erase '^H' && read -e -p "设置代理用户名：" user
-if [ ! ${user} ]; then
-user="admin"
-fi
-
-stty erase '^H' && read -e -p "设置代理密码：" pass
-if [ ! ${pass} ]; then
-pass=`cat /dev/urandom | head -n 10 | md5sum | head -c 8`
-fi
-
-stty erase '^H' && read -e -p "设置自定义域名：" domain
-if [ ! ${domain} ]; then
-rm -rf local_ip.txt && touch local_ip.txt
-echo `curl -4 ip.sb` >> local_ip.txt && sed -i "s/\./\-/g" "local_ip.txt"
-domain="$(cat local_ip.txt).${domain_root}" && rm -rf local_ip.txt
-fi
-
-stty erase '^H' && read -e -p "要伪装成的网站（默认请留空）：" website
-if [ ! ${website} ]; then
-set_website_num
-fi
-
-#检测端口
-check_port
-
-}
-
-
-
-#储存配置信息
-storage_proxy_info(){
-
-echo "----------------------------------------------------------"
-echo "正在写入配置信息"
-echo "----------------------------------------------------------"
-
-rm -rf /usr/local/bin/proxy_info
-mkdir /usr/local/bin/proxy_info
-
-touch /usr/local/bin/proxy_info/username
-cat <<EOF > /usr/local/bin/proxy_info/username
-${user}
-EOF
-
-touch /usr/local/bin/proxy_info/password
-cat <<EOF > /usr/local/bin/proxy_info/password
-${pass}
-EOF
-
-touch /usr/local/bin/proxy_info/domain
-cat <<EOF > /usr/local/bin/proxy_info/domain
-${domain}
-EOF
-
-touch /usr/local/bin/proxy_info/port
-cat <<EOF > /usr/local/bin/proxy_info/port
-${port}
-EOF
-
-}
-
-
-
-#读取配置信息
-read_proxy_info(){
-
-echo "----------------------------------------------------------"
-echo "正在读取配置信息"
-echo "----------------------------------------------------------"
-
-get_user="$(cat /usr/local/bin/proxy_info/username)"
-
-get_pass="$(cat /usr/local/bin/proxy_info/password)"
-
-get_domain="$(cat /usr/local/bin/proxy_info/domain)"
-
-get_port="$(cat /usr/local/bin/proxy_info/port)"
-
-}
-
-
-
 #清除可能残余的caddy
 clean_caddy(){
 
@@ -234,7 +85,7 @@ echo "----------------------------------------------------------"
 touch /usr/local/bin/Caddyfile
 
 cat <<EOF > /usr/local/bin/Caddyfile
-${domain}:${port} {
+${domain} {
 root /www
 log /www/caddy.log
 proxy /downloads 127.0.0.1:10550 {
@@ -293,11 +144,11 @@ echo "----------------------------------------------------------"
 rm -rf /www
 mkdir /www
 
-wget -c -r -np -k -L -p ${website}
+wget -N "https://github.com/john8911/onekey_caddy_proxy/releases/download/web/www.zip"
 
-mv ./*${website}*/* /www
-
-rm -rf ./*${website}*
+mv ./www.zip /www
+unzip ./www/www.zip
+rm -rf ./www.zip
 
 }
 
