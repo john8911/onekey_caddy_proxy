@@ -8,10 +8,10 @@
 
 
 #获取配置信息
-user="$1"
-pass="$2"
-domain="$3"
-website="$4"
+#user="$1"
+#pass="$2"
+domain="$1"
+#website="$4"
 
 
 
@@ -146,8 +146,7 @@ mkdir /www
 
 wget -N "https://github.com/john8911/onekey_caddy_proxy/releases/download/web/www.zip"
 
-mv ./www.zip /www
-unzip ./www/www.zip
+unzip www.zip -d /www
 rm -rf ./www.zip
 
 }
